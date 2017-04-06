@@ -433,8 +433,8 @@ Die Pakete des alten Leoclient müssen von Hand entfernt werden:
 
 ::
    
-   ``# apt-get purge leoclient-leovirtstarter-client leoclient-leovirtstarter-common``
-   ``# apt-get purge leoclient-leovirtstarter-server leoclient-tools leoclient-virtualbox leoclient-vm-printer``
+   # apt-get purge leoclient-leovirtstarter-client leoclient-leovirtstarter-common
+   # apt-get purge leoclient-leovirtstarter-server leoclient-tools leoclient-virtualbox leoclient-vm-printer
    
 
 Evtl. alte Daten von leoclient (Version 1) entfernen:
@@ -459,14 +459,14 @@ z.B.: Inhalt der Datei:
 
 ::
    
-   ``#``
-   ``# This File MUST be edited with the 'visudo' command as root.``
-   ``#``
-   ``...``
-   ``...``
-   ``%sudo   ALL=(ALL:ALL) ALL``
-   ``# see sudoers(5) for more Information on "#include" directives.``
-   ``#includedir /etc/sudoers.d``
+   #
+   # This File MUST be edited with the 'visudo' command as root.
+   #
+   ...
+   ...
+   %sudo   ALL=(ALL:ALL) ALL
+   # see sudoers(5) for more Information on "#include" directives.
+   #includedir /etc/sudoers.d
    
 
 Hintergrundinformationen
@@ -494,11 +494,11 @@ Die Datei ``caches.conf`` kann damit folgendes Aussehen haben:
 
 ::
    
-   ``# common cache configuration``
-   ``/media/localdisk::4000::ALLHOSTS::``
-   ``# possible in the future``
-   ``#/media/localdisk::2000::HOST::j1010p16``
-   ``#/media/localdisk::2000::ROOM::j1010``
+   # common cache configuration
+   /media/localdisk::4000::ALLHOSTS::
+   # possible in the future
+   #/media/localdisk::2000::HOST::j1010p16
+   #/media/localdisk::2000::ROOM::j1010
    
 
 Dabei beschreibt die Zeile ``/media/localdisk::4000::ALLHOSTS::`` einen Cache unter ``/media/localdisk``. (Ist in diesem Fall eine lokale Datenpartition, die über ``etc/fstab`` wie folgt eingebunden wird: ``/dev/sda6  /media/localdisk  ext4  defaults  0  2``.) Der Cache soll dabei nicht mehr als die eingetragenen ``4000`` in MB (= 4 GB) belegen. Ist diese Grenze überschritten, so wird jeweils wiederholt der Snapshot gelöscht, der am ältesten ist, d.h. der am längsten im Cache liegt.
@@ -519,8 +519,8 @@ Der Standard-Pfad für die remote VM ist dabei ``/media/leoclient2-vm`` .
 Auflisten kann man alle sichtbaren VM's mit:
 ::
    
-   ``$ leovirtstarter2 -i``
-   ``$ leovirtstarter2 --info``
+   $ leovirtstarter2 -i
+   $ leovirtstarter2 --info
    
 
 Wird mit dem ``leovirtstarter2`` ein Snapshot einer VM zum Starten ausgewählt, wird folgendes abgearbeitet:
