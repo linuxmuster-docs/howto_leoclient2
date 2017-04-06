@@ -479,6 +479,17 @@ Serverbasierte VM kopieren, lokaler cache
 
 Die auf dem Server liegenden gezippten Basisimages und Snapshots werden (falls lokal nicht vorhanden oder verändert) beim Start in den lokalen cache kopiert und dann lokal an die Stelle entpackt, wo sie genutzt werden. Der Cache hat eine maximale Größe, die in ``SERVERDIR/caches.conf`` definiert wird. Es empfielt sich dafür ein lokales Datenlaufwerk zu verwenden. Falls das nicht vorhanden ist, ein Verzeichnis auf der Partition mit den virtuellen Maschinen.
 
+Die Datei ``caches.conf`` kann damit folgendes Aussehen haben:
+
+``# common cache configuration``
+``/media/localdisk::4000::ALLHOSTS::``
+``# possible in the future``
+``#/media/localdisk::2000::HOST::j1010p16``
+``#/media/localdisk::2000::ROOM::j1010``
+
+Dabei beschreibt die Zeile ``/media/localdisk::4000::ALLHOSTS::`` einen Cache unter ``/media/localdisk``. (Ist in diesem Fall eine lokale Datenpartition, die über ``etc/fstab`` wie folgt eingebunden wird: ``/dev/sda6  /media/localdisk  ext4  defaults  0  2``.) Der Cache soll dabei nicht mehr als die eingetragenen ``4000`` in MB (= 4 GB) belegen. Ist diese Grenze überschritten, so wird jeweils wiederholt der Snapshot gelöscht, der am ältesten ist, d.h. der am längsten im Cache liegt.
+``ALLHOSTS`` ist momentan die einzige funktionierende Option für die Verfügbarkeit des Caches. Zukünftig soll client- bzw. raumspezifisch eine Verwendung des Cache konfigurierbar sein (siehe oben die Beispieleinträge in ``caches.conf``). 
+
 
 Virtuelle Maschine starten
 ``````````````````````````
