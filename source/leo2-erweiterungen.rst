@@ -13,16 +13,20 @@ Damit erfolgt die Synchronisation der Installation des Linuxclients deutlich sch
 
 Beispiel: Es existiert eine Partition ``/dev/sda3`` (wie z.B. bei der start.conf zum default-cloop), die mit ext4 formatiert ist. Zunächst das Verzeichnis ``/var/virtual/`` leeren bzw. den Inhalt wegsichern. Dann die Datei ``/etc/fstab`` als root editieren und letzte Zeile ergänzen:
 
-.. code: bash
-
-  #  /etc/fstab: static file system information.
-  #
-  /dev/sda3   /var/virtual    ext4   defaults  0  0
+::
+   
+   #  /etc/fstab: static file system information.
+   #
+   /dev/sda3   /var/virtual    ext4   defaults  0  0
+   
 
 Danach als root folgendes auf der Konsole ausführen, um die Partition zu mounten und das ganze dann noch mit ``df`` zu überprüfen:
 
-``# mount -a``
-``# df -h``
+::
+   
+   # mount -a
+   # df -h
+   
 
 Nun ggf. die weggesicherten Dateien aus wieder nach ``/var/virtual/`` zurückspielen und von beiden Partitionen ein Image erstellen.
 
@@ -104,87 +108,87 @@ oder für den Snapshot ``Software2015``
 
 Damit gibt es nun einen neuen Snapshot mit dem Namen ``Software2015`` im Auswahlmenü des Snapshotstarters.
 
-.. code: bash
+::
+   
+   /usr/bin/leoclient2-snapshot-create
   
-  /usr/bin/leoclient2-snapshot-create
-  
-    #!/bin/bash
-    #
-    # /usr/bin/leoclient2-snapshot-create
-    #
-    # Usage:  leoclient2-snapshot-create -m <VM-name> -s <Snapshot-name>
-    # Ohne Snapshot-name wird der standard-Snapshot gesetzt
-    # Script als root ausführen
-    #
-     
-    etcdir="/etc/leoclient2/machines"
-    OPTIND=1
-    VMPATH="/var/virtual"
-     
-    vm=""
-    S_NAME="standard"
-    MACHINENAME=""
-    MACHINEPATH=""
-     
-    while getopts "m:s:" opt; do
-        case "$opt" in
-        m)  vm=$OPTARG
-            ;;
-        s)  S_NAME=$OPTARG
-            ;;
-        esac
-    done
-     
-    shift $((OPTIND-1))
-    [ "$1" = "--" ] && shift
-     
-    for file in "$etcdir"/*.conf; do
-      pfad=`cat $file`
-      b=$(basename "$pfad")
-      if [ "$b" = "$vm" ] ; then
-        MACHINENAME=$b
-        MACHINEPATH=$pfad
-      fi
-    done
-     
-    if [ "$MACHINENAME" = "" ] ; then
-      echo "ERROR: Virtual Machine $vm wurde nicht gefunden!"
-      exit 1
-    fi
-     
-    snapshotdir="$MACHINEPATH/Snapshots"
-    s_filepfad=`find $snapshotdir -name "*.vdi" -print -quit`
-     
-    if [ "$s_filepfad" = "" ] ; then
-      echo "ERROR: Kein Snapshot *.vdi gefunden!"
-      exit 1
-    fi
-     
-    SNAPSHOTPATH="$MACHINEPATH/snapshot-store/$S_NAME"
-     
-    if [ -d "$SNAPSHOTPATH" ]; then
-      rm -Rf $SNAPSHOTPATH/*
-    else
-      mkdir "$SNAPSHOTPATH"
-    fi 
-     
-    cp -f "$s_filepfad" "$SNAPSHOTPATH"
-    FILESIZE=$(stat -c%s "$s_filepfad")
-    echo $FILESIZE > "$SNAPSHOTPATH/filesize.vdi"
-     
-    sf=$(basename "$s_filepfad")
-    z_filepfad="$SNAPSHOTPATH/$sf.zip"
-     
-    zip -9 -j $z_filepfad $s_filepfad
-    FILESIZE=$(stat -c%s "$z_filepfad")
-    echo $FILESIZE > "$SNAPSHOTPATH/filesize.vdi.zipped"
-     
-    chmod -R 755 "$SNAPSHOTPATH"
-     
-    echo "  OK: Snapshot $sf wurde als $S_NAME gesetzt."
-     
-    exit 0
-
+   #!/bin/bash
+   #
+   # /usr/bin/leoclient2-snapshot-create
+   #
+   # Usage:  leoclient2-snapshot-create -m <VM-name> -s <Snapshot-name>
+   # Ohne Snapshot-name wird der standard-Snapshot gesetzt
+   # Script als root ausführen
+   #
+    
+   etcdir="/etc/leoclient2/machines"
+   OPTIND=1
+   VMPATH="/var/virtual"
+    
+   vm=""
+   S_NAME="standard"
+   MACHINENAME=""
+   MACHINEPATH=""
+    
+   while getopts "m:s:" opt; do
+       case "$opt" in
+       m)  vm=$OPTARG
+           ;;
+       s)  S_NAME=$OPTARG
+           ;;
+       esac
+   done
+    
+   shift $((OPTIND-1))
+   [ "$1" = "--" ] && shift
+    
+   for file in "$etcdir"/*.conf; do
+     pfad=`cat $file`
+     b=$(basename "$pfad")
+     if [ "$b" = "$vm" ] ; then
+       MACHINENAME=$b
+       MACHINEPATH=$pfad
+     fi
+   done
+    
+   if [ "$MACHINENAME" = "" ] ; then
+     echo "ERROR: Virtual Machine $vm wurde nicht gefunden!"
+     exit 1
+   fi
+    
+   snapshotdir="$MACHINEPATH/Snapshots"
+   s_filepfad=`find $snapshotdir -name "*.vdi" -print -quit`
+    
+   if [ "$s_filepfad" = "" ] ; then
+     echo "ERROR: Kein Snapshot *.vdi gefunden!"
+     exit 1
+   fi
+    
+   SNAPSHOTPATH="$MACHINEPATH/snapshot-store/$S_NAME"
+    
+   if [ -d "$SNAPSHOTPATH" ]; then
+     rm -Rf $SNAPSHOTPATH/*
+   else
+     mkdir "$SNAPSHOTPATH"
+   fi 
+    
+   cp -f "$s_filepfad" "$SNAPSHOTPATH"
+   FILESIZE=$(stat -c%s "$s_filepfad")
+   echo $FILESIZE > "$SNAPSHOTPATH/filesize.vdi"
+    
+   sf=$(basename "$s_filepfad")
+   z_filepfad="$SNAPSHOTPATH/$sf.zip"
+    
+   zip -9 -j $z_filepfad $s_filepfad
+   FILESIZE=$(stat -c%s "$z_filepfad")
+   echo $FILESIZE > "$SNAPSHOTPATH/filesize.vdi.zipped"
+    
+   chmod -R 755 "$SNAPSHOTPATH"
+    
+   echo "  OK: Snapshot $sf wurde als $S_NAME gesetzt."
+    
+   exit 0
+   
 
 VM Windows XP – Tipps und Tricks
 --------------------------------
@@ -317,10 +321,11 @@ Möchte man eine Netzwerkkarte aktivieren, so muss im Maschinenverzeichnis der V
 
 Z.B. ``/var/virtual/winxp/network.conf``
   
-.. code: bash
+::
+   
+   # Beispiel einer NAT-Netzwerkkarte
+   r100-pclehrer;1;nat;080011223344;auto-used-nic
 
-    # Beispiel einer NAT-Netzwerkkarte
-    r100-pclehrer;1;nat;080011223344;auto-used-nic
 
 Folgendes typische Netzwereinstellungen können bisher (Version 0.5.4-1, Juli 2015) umgesetzt werden:
 -    nat - NAT auf die NIC des pädagogischen Netzes (VM kann ins Internet)
@@ -359,12 +364,13 @@ Die Dateirechte der VM- bzw. Snapshot-Verzeichnisse müssen so eingestellt sein 
 
 Beispieldatei image.conf
 
-.. code: bash
+::
+   
+   # Berechtigugen eine VM zu starten. 
+   group=teachers
+   host=
+   room=lehrerzimmer
 
-  # Berechtigugen eine VM zu starten. 
-  group=teachers
-  host=
-  room=lehrerzimmer
 
 Hinweis: Die Berechtigung für einen einzelnen Snapshot wird nur dann korrekt ausgewertet, wenn beim HOST-LEVEL beide Optionen host und room auftauchen. Fehlt z.B. die „room“-Option ist jeder Raum und damit auch jeder Host zugelassen!
 
@@ -394,22 +400,22 @@ Den Hinweis aus der Fehlermeldung nimmt man zur Korrektur der Konfigurationsdate
 Dabei muss man in diesem Beispiel die Einträge ``{764a4d59-464c-45ea-bd58-ee5ba35c1f09}`` durch ``{a9fbe850-cb0d-45d1-a08b-619fc3457410}`` ersetzen (vgl. Fehlermeldung).
 Die entsprechenden Abschnitte für HardDisks und StorageController könnten dann wie folgt aussehen:
 
-.. code: bash
-
-    (...)
-    <HardDisks>
-      <HardDisk uuid="{a9fbe850-cb0d-45d1-a08b-619fc3457410}" location="win-umzug.vdi" format="VDI" type="Normal">
-        <HardDisk uuid="{4852257a-b9b9-4a69-8b75-84555b24064d}" location="Snapshots/{4852257a-b9b9-4a69-8b75-84555b24064d}.vdi" format="VDI"/>
-      </HardDisk>
-    (...)
-    <StorageControllers>
-      <StorageController name="win-umzug" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
-        <AttachedDevice type="HardDisk" port="0" device="0">
-          <Image uuid="{a9fbe850-cb0d-45d1-a08b-619fc3457410}"/>
-        </AttachedDevice>
-      </StorageController>
-    </StorageControllers>
-    (...)
+::
+   
+   (...)
+   <HardDisks>
+     <HardDisk uuid="{a9fbe850-cb0d-45d1-a08b-619fc3457410}" location="win-umzug.vdi" format="VDI" type="Normal">
+       <HardDisk uuid="{4852257a-b9b9-4a69-8b75-84555b24064d}" location="Snapshots/{4852257a-b9b9-4a69-8b75-84555b24064d}.vdi" format="VDI"/>
+     </HardDisk>
+   (...)
+   <StorageControllers>
+     <StorageController name="win-umzug" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
+       <AttachedDevice type="HardDisk" port="0" device="0">
+         <Image uuid="{a9fbe850-cb0d-45d1-a08b-619fc3457410}"/>
+       </AttachedDevice>
+     </StorageController>
+   </StorageControllers>
+   (...)
     
 
 Die Datei ``VirtualBox.xml`` muss nicht angepasst werden.
@@ -425,8 +431,11 @@ Software-Pakete entfernen
 
 Die Pakete des alten Leoclient müssen von Hand entfernt werden:
 
-``# apt-get purge leoclient-leovirtstarter-client leoclient-leovirtstarter-common``
-``# apt-get purge leoclient-leovirtstarter-server leoclient-tools leoclient-virtualbox leoclient-vm-printer``
+::
+   
+   ``# apt-get purge leoclient-leovirtstarter-client leoclient-leovirtstarter-common``
+   ``# apt-get purge leoclient-leovirtstarter-server leoclient-tools leoclient-virtualbox leoclient-vm-printer``
+   
 
 Evtl. alte Daten von leoclient (Version 1) entfernen:
 
@@ -448,15 +457,17 @@ Kommando zum Starten des Editors für die sudoers-Datei:
 
 z.B.: Inhalt der Datei:
 
-    ``#``
-    ``# This File MUST be edited with the 'visudo' command as root.``
-    ``#``
-    ``...``
-    ``...``
-    ``%sudo   ALL=(ALL:ALL) ALL``
-    ``# see sudoers(5) for more Information on "#include" directives.``
-    ``#includedir /etc/sudoers.d``
-
+::
+   
+   ``#``
+   ``# This File MUST be edited with the 'visudo' command as root.``
+   ``#``
+   ``...``
+   ``...``
+   ``%sudo   ALL=(ALL:ALL) ALL``
+   ``# see sudoers(5) for more Information on "#include" directives.``
+   ``#includedir /etc/sudoers.d``
+   
 
 Hintergrundinformationen
 ------------------------
@@ -481,11 +492,14 @@ Die auf dem Server liegenden gezippten Basisimages und Snapshots werden (falls l
 
 Die Datei ``caches.conf`` kann damit folgendes Aussehen haben:
 
-    ``# common cache configuration``
-    ``/media/localdisk::4000::ALLHOSTS::``
-    ``# possible in the future``
-    ``#/media/localdisk::2000::HOST::j1010p16``
-    ``#/media/localdisk::2000::ROOM::j1010``
+::
+   
+   ``# common cache configuration``
+   ``/media/localdisk::4000::ALLHOSTS::``
+   ``# possible in the future``
+   ``#/media/localdisk::2000::HOST::j1010p16``
+   ``#/media/localdisk::2000::ROOM::j1010``
+   
 
 Dabei beschreibt die Zeile ``/media/localdisk::4000::ALLHOSTS::`` einen Cache unter ``/media/localdisk``. (Ist in diesem Fall eine lokale Datenpartition, die über ``etc/fstab`` wie folgt eingebunden wird: ``/dev/sda6  /media/localdisk  ext4  defaults  0  2``.) Der Cache soll dabei nicht mehr als die eingetragenen ``4000`` in MB (= 4 GB) belegen. Ist diese Grenze überschritten, so wird jeweils wiederholt der Snapshot gelöscht, der am ältesten ist, d.h. der am längsten im Cache liegt.
 ``ALLHOSTS`` ist momentan die einzige funktionierende Option für die Verfügbarkeit des Caches. Zukünftig soll client- bzw. raumspezifisch eine Verwendung des Cache konfigurierbar sein (siehe oben die Beispieleinträge in ``caches.conf``). 
@@ -503,8 +517,11 @@ Außer den lokal vorhandenen Maschinen wird auch in allen in ``SERVERDIR`` konfi
 Der Standard-Pfad für die remote VM ist dabei ``/media/leoclient2-vm`` .
 
 Auflisten kann man alle sichtbaren VM's mit:
-``$ leovirtstarter2 -i``
-``$ leovirtstarter2 --info``
+::
+   
+   ``$ leovirtstarter2 -i``
+   ``$ leovirtstarter2 --info``
+   
 
 Wird mit dem ``leovirtstarter2`` ein Snapshot einer VM zum Starten ausgewählt, wird folgendes abgearbeitet:
 - Kopieren der Standard-Konfigurationsdateien aus ``/PFAD/MASCHINENNAME/defaults/`` nach ``/PFAD/MASCHINENNAME/`` 
@@ -531,10 +548,10 @@ Aufruf z.B.:
 
 ``# leoclient2-directstart -m winxp -r 1024 -s standard``
 
-.. code: bash
-
-  /usr/bin/leoclient2-directstart
-  
+::
+   
+   /usr/bin/leoclient2-directstart
+   
     #! /bin/bash
     #
     #  /usr/bin/leoclient2-directstart -m <VM> -s <Snapshot> -r <RAM>
@@ -689,13 +706,14 @@ Aufruf z.B.:
     /usr/bin/VBoxManage startvm "$vm" --type gui
      
     exit 0
+   
 
 Zum bequemen Starten kann man einen Desktop-Starter anlegen, z.B. für die VM „winxp“ mit 1024 MB RAM und „standard“-Snapshot:
 
-.. code: bash
-
-  leoclient2-directstart.desktop
-
+::
+   
+   leoclient2-directstart.desktop
+   
     [Desktop Entry]
     Version=1.0
     Type=Application
@@ -707,6 +725,7 @@ Zum bequemen Starten kann man einen Desktop-Starter anlegen, z.B. für die VM �
     Categories=Graphics;Engineering;
     Categories=Emulator;System;Application;
     Terminal=false
+    
 
 Hinweis: Nach Anlegen dieser Datei muss diese ausführbar gesetzt werden.
 
