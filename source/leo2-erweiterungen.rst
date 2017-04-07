@@ -53,7 +53,7 @@ Remote virtuelle Maschine erzeugen
 Eine lokale VM wird zur remoten VM, indem
 - ihr Datenverzeichnis auf den Server kopiert wird, z.B. das Verzeichnis ``/var/virtual/winxp`` kopieren in das Netzlaufwerk auf dem Server ``/media/leoclient2-vm``:
   
-  ``# cp -R /var/virtual/winxp /media/leoclient2-vm``
+``# cp -R /var/virtual/winxp /media/leoclient2-vm``
   
 - ggf. die Variable ``SERVERDIR`` angepasst wird, falls ein anderes Share verwendet
 

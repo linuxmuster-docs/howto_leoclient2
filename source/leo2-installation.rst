@@ -7,9 +7,13 @@ Software-Pakete installieren
 Die leoclient-Pakete liegen auf dem linuxmuster.net-Paketserver, der im Linuxclient schon zur Einrichtung der Anmeldung am Server eingetragen wurde.
  
 Die Pakete werden installiert mit root-Rechten auf dem Linuxclient mit folgenden Befehlen:
-``# apt-get update``
-``# apt-get install libglib-perl libgtk2-perl``
-``# apt-get install leoclient2-leovirtstarter-client leoclient2-vm-printer linuxmuster-client-sudoers``
+
+::
+   
+   # apt-get update
+   # apt-get install libglib-perl libgtk2-perl
+   # apt-get install leoclient2-leovirtstarter-client leoclient2-vm-printer linuxmuster-client-sudoers
+   
 
 Damit wird ggf. auch das Paket virtualbox-x.y auf dem Linuxclient installiert. Eine aktuelle Version kann man mit Hilfe der Anleitung z.B. unter https://www.virtualbox.org/wiki/Linux_Downloads installieren. Für die Schule kann die PUEL-Version installiert werden, die beispielsweise USB2 unterstützt (statt USB1.1).
 
@@ -32,8 +36,8 @@ Bei der Anmeldung eines Benutzers werden die Rechte an den lokalen virtuellen Ma
 
 ``/etc/linuxmuster-client/post-mount.d/015-leoclient2``
 
-.. code:: bash
-
+::
+   
    #!/bin/bash
    #
    #  Script /etc/linuxmuster-client/post-mount.d/015-leoclient2
@@ -51,4 +55,5 @@ Bei der Anmeldung eines Benutzers werden die Rechte an den lokalen virtuellen Ma
       chown $USER "$vmpfad/$vmname.vbox-prev" 
    done  
    exit 0 
+   
 
